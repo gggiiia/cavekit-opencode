@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "v*.*.*"
+  schedule:
+    - cron: "13 * * * *"
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -14,15 +17,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
+      - name: Resolve target tag
+        run: |
+          if [[ "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
+          else
+            TAG=$(git tag --sort=-version:refname | head -1)
+            echo "TAG=$TAG" >> $GITHUB_ENV
+            echo "resolved latest tag: $TAG"
+          fi
+
       - name: Publish to npm
         run: |
-          PKG_VER="${GITHUB_REF_NAME#v}"
+          PKG_VER="${TAG#v}"
           if ! npm view "cavekit-opencode@${PKG_VER}" version &>/dev/null; then
             npm publish --provenance --access public
           else
@@ -33,10 +48,10 @@ jobs:
 
       - name: Create GitHub Release
         run: |
-          if ! gh release view "$GITHUB_REF_NAME" &>/dev/null; then
-            gh release create "$GITHUB_REF_NAME" --generate-notes
+          if ! gh release view "$TAG" &>/dev/null; then
+            gh release create "$TAG" --generate-notes
           else
-            echo "release $GITHUB_REF_NAME already exists — skipping"
+            echo "release $TAG already exists — skipping"
           fi
         env:
           GH_TOKEN: ${{ github.token }}
