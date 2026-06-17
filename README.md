@@ -33,18 +33,30 @@ Every test failure becomes a §B entry. Classes of bug become §V invariants the
 
 ## Install
 
+### Via opencode.json (recommended)
+
+```json
+{
+  "plugin": ["cavekit-opencode"]
+}
+```
+
+The plugin auto-installs commands and skills into your opencode config on load.
+
+**Prerequisite**: `npm install -g cavekit-opencode` or add to your project:
+
 ```sh
-# Install commands and skills globally
+npm install cavekit-opencode   # project-level
+npm install -g cavekit-opencode # global
+```
+
+### Manual install
+
+```sh
 git clone https://github.com/gggiiia/cavekit-opencode.git
 cd cavekit-opencode
 cp commands/ck-*.md ~/.config/opencode/commands/
 cp -r skills/ck-* ~/.config/opencode/skills/
-
-# Or per-project
-cp commands/ck-*.md .opencode/commands/
-cp -r skills/ck-* .opencode/skills/
-
-# Copy FORMAT.md to project root (required by commands)
 cp FORMAT.md /path/to/your/project/
 ```
 
