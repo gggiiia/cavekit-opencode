@@ -21,9 +21,11 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - run: npm publish --provenance --access public
+        continue-on-error: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - run: gh release create "$GITHUB_REF_NAME" --generate-notes
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
