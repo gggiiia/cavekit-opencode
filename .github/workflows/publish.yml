@@ -20,12 +20,23 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
 
-      - run: npm publish --provenance --access public
-        continue-on-error: true
+      - name: Publish to npm
+        run: |
+          PKG_VER="${GITHUB_REF_NAME#v}"
+          if ! npm view "cavekit-opencode@${PKG_VER}" version &>/dev/null; then
+            npm publish --provenance --access public
+          else
+            echo "version ${PKG_VER} already published — skipping"
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - run: gh release create "$GITHUB_REF_NAME" --generate-notes
-        continue-on-error: true
+      - name: Create GitHub Release
+        run: |
+          if ! gh release view "$GITHUB_REF_NAME" &>/dev/null; then
+            gh release create "$GITHUB_REF_NAME" --generate-notes
+          else
+            echo "release $GITHUB_REF_NAME already exists — skipping"
+          fi
         env:
           GH_TOKEN: ${{ github.token }}

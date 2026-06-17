@@ -3,7 +3,7 @@ description: >
   Spec-driven development orchestrator. Takes ideas → creates SPEC.md via
   @ck-spec → plans task groups via @ck-plan → parallel builds via @ck-build
   → drift report via @ck-check. One-stop for full feature development.
-mode: subagent
+mode: primary
 ---
 
 # cavekit — orchestrator
