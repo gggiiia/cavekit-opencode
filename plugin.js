@@ -34,6 +34,9 @@ function installFiles() {
 
   const skillDir = join(configDir, 'skills');
   copyDir(join(here, 'skills'), skillDir);
+
+  const agentDir = join(configDir, 'agents');
+  copyDir(join(here, 'agents'), agentDir);
 }
 
 export default async () => {

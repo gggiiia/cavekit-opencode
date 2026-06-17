@@ -21,8 +21,16 @@ cp -r "$SCRIPT_DIR/skills/ck-spec"     "$SKILL_DIR/"
 cp -r "$SCRIPT_DIR/skills/ck-build"    "$SKILL_DIR/"
 cp -r "$SCRIPT_DIR/skills/ck-check"    "$SKILL_DIR/"
 
+AGENT_DIR="${TARGET}/../agents"
+if [ "$TARGET" = "global" ]; then
+  AGENT_DIR="$HOME/.config/opencode/agents"
+else
+  AGENT_DIR="$TARGET/.opencode/agents"
+fi
+mkdir -p "$AGENT_DIR"
+cp "$SCRIPT_DIR/agents/cavekit.md" "$AGENT_DIR/"
+
 echo "cavekit installed to:"
 echo "  commands → $CMD_DIR/ck-*.md"
 echo "  skills  → $SKILL_DIR/ck-*/"
-echo ""
-echo "Copy FORMAT.md and/or AGENTS.md to your project root as needed."
+echo "  agent   → $AGENT_DIR/cavekit.md"

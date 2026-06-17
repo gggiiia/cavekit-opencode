@@ -17,6 +17,7 @@
     "plugin.js",
     "commands/",
     "skills/",
+    "agents/",
     "FORMAT.md",
     "AGENTS.md",
     "INSTALL.md",

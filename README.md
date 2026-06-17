@@ -12,6 +12,21 @@ Spec-driven development commands for OpenCode. Port of [cavekit v4](https://gith
 | `/ck-build` | Plan-then-execute against spec. Auto-backprops on failure. |
 | `/ck-check` | Read-only drift report. Lists §V / §I / §T violations. |
 
+## Agent
+
+`@cavekit` subagent orchestrates the full cycle:
+
+```
+> @cavekit build a CLI that converts markdown to PDF
+→ creates SPEC.md
+→ shows you the spec
+→ asks for approval
+→ plans first task
+→ shows you the plan
+→ implements, verifies, reports
+→ repeats until all tasks done
+```
+
 ## How it works
 
 ```
@@ -57,6 +72,7 @@ git clone https://github.com/gggiiia/cavekit-opencode.git
 cd cavekit-opencode
 cp commands/ck-*.md ~/.config/opencode/commands/
 cp -r skills/ck-* ~/.config/opencode/skills/
+cp agents/cavekit.md ~/.config/opencode/agents/
 cp FORMAT.md /path/to/your/project/
 ```
 
@@ -66,6 +82,24 @@ Or use the install script: `bash install.sh [project-path]`
 
 - [caveman](https://github.com/JuliusBrussee/caveman) plugin for OpenCode (recommended)
 - OpenCode >= 1.15
+
+## Usage
+
+### `@cavekit` subagent (recommended)
+
+```
+@cavekit build an auth service with JWT tokens
+```
+
+Agent creates SPEC.md, shows you the spec, asks for approval, plans the first task, shows the plan, implements, verifies, and repeats until done.
+
+### Slash commands
+
+```
+/ck-spec "auth service with JWT"
+/ck-build --next
+/ck-check --all
+```
 
 ## Files
 
@@ -78,6 +112,8 @@ skills/
 ├── ck-spec/SKILL.md     discovery-triggered spec
 ├── ck-build/SKILL.md    discovery-triggered build
 └── ck-check/SKILL.md    discovery-triggered check
+agents/
+└── cavekit.md           @cavekit subagent — full cycle orchestrator
 FORMAT.md                SPEC.md schema + caveman encoding rules
 AGENTS.md                always-on backprop protocol + encoding rules
 install.sh               installer
