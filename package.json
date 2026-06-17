@@ -2,14 +2,29 @@
   "name": "cavekit-opencode",
   "version": "1.0.0",
   "description": "Spec-driven development commands for OpenCode — compressed spec, plan-execute loop, drift detection.",
+  "type": "module",
+  "main": "plugin.js",
+  "exports": {
+    ".": "./plugin.js"
+  },
   "license": "MIT",
   "author": "gggiiia",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gggiiia/cavekit-opencode.git"
   },
+  "files": [
+    "plugin.js",
+    "commands/",
+    "skills/",
+    "FORMAT.md",
+    "AGENTS.md",
+    "INSTALL.md",
+    "install.sh"
+  ],
   "keywords": [
     "opencode",
+    "opencode-plugin",
     "cavekit",
     "caveman",
     "spec-driven-development",
