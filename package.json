@@ -7,6 +7,10 @@
   "exports": {
     ".": "./plugin.js"
   },
+  "scripts": {
+    "postinstall": "./install.sh",
+    "postuninstall": "rm -f $HOME/.config/opencode/commands/ck-*.md && rm -rf $HOME/.config/opencode/skills/ck-*/ && rm -f $HOME/.config/opencode/agents/cavekit.md $HOME/.config/opencode/agents/ck-*.md"
+  },
   "license": "MIT",
   "author": "gggiiia",
   "repository": {

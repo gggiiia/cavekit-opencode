@@ -28,9 +28,9 @@ else
   AGENT_DIR="$TARGET/.opencode/agents"
 fi
 mkdir -p "$AGENT_DIR"
-cp "$SCRIPT_DIR/agents/cavekit.md" "$AGENT_DIR/"
+cp "$SCRIPT_DIR/agents/"*.md "$AGENT_DIR/"
 
 echo "cavekit installed to:"
 echo "  commands → $CMD_DIR/ck-*.md"
 echo "  skills  → $SKILL_DIR/ck-*/"
-echo "  agent   → $AGENT_DIR/cavekit.md"
+echo "  agents  → $AGENT_DIR/ck-*.md"
