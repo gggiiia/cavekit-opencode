@@ -2,7 +2,7 @@
 
 Spec-driven development commands for OpenCode. Port of [cavekit v4](https://github.com/JuliusBrussee/cavekit) — compressed spec, plan-execute loop, drift detection.
 
-**One spec to rule them all. Three commands. Zero sub-agents.**
+**One spec to rule them all. Five agents. Parallel dispatch.**
 
 ## Commands
 
@@ -12,19 +12,39 @@ Spec-driven development commands for OpenCode. Port of [cavekit v4](https://gith
 | `/ck-build` | Plan-then-execute against spec. Auto-backprops on failure. |
 | `/ck-check` | Read-only drift report. Lists §V / §I / §T violations. |
 
-## Agent
+## Agents
 
-`@cavekit` subagent orchestrates the full cycle:
+### `@cavekit` (orchestrator)
+Coordinates the full cycle — delegates to subagents, handles parallel dispatch.
+
+### `@ck-spec`
+Creates/amends/backprops SPEC.md. No code editing.
+
+### `@ck-plan`
+Reads §T dependency graph, outputs parallel build groups as JSON.
+
+### `@ck-build`
+Implements ONE §T task. Runs in parallel with other @ck-build instances for independent tasks.
+
+### `@ck-check`
+Drift detection — diffs SPEC.md against code. Read-only.
+
+### Parallel flow
 
 ```
 > @cavekit build a CLI that converts markdown to PDF
-→ creates SPEC.md
-→ shows you the spec
-→ asks for approval
-→ plans first task
-→ shows you the plan
-→ implements, verifies, reports
-→ repeats until all tasks done
+
+@cavekit → dispatches @ck-spec → SPEC.md created
+        → shows spec, asks approval
+        → dispatches @ck-plan → build groups
+        → shows plan, asks approval
+        → group 1: spawn @ck-build T1 + @ck-build T3 (PARALLEL)
+            ├── T1 → implements → flips to x
+            └── T3 → implements → flips to x
+        → group 2: spawn @ck-build T2
+            └── T2 → implements → flips to x
+        → dispatches @ck-check → drift report
+        → shows summary
 ```
 
 ## How it works
@@ -72,7 +92,7 @@ git clone https://github.com/gggiiia/cavekit-opencode.git
 cd cavekit-opencode
 cp commands/ck-*.md ~/.config/opencode/commands/
 cp -r skills/ck-* ~/.config/opencode/skills/
-cp agents/cavekit.md ~/.config/opencode/agents/
+cp agents/*.md ~/.config/opencode/agents/
 cp FORMAT.md /path/to/your/project/
 ```
 
@@ -85,15 +105,24 @@ Or use the install script: `bash install.sh [project-path]`
 
 ## Usage
 
-### `@cavekit` subagent (recommended)
+### `@cavekit` orchestrator (recommended)
 
 ```
 @cavekit build an auth service with JWT tokens
 ```
 
-Agent creates SPEC.md, shows you the spec, asks for approval, plans the first task, shows the plan, implements, verifies, and repeats until done.
+Agent creates SPEC.md, analyzes dependencies, parallelizes independent tasks, builds, and verifies. You approve at spec and plan stages.
 
-### Slash commands
+### Direct subagent invocation
+
+```
+@ck-spec "auth service with JWT"
+@ck-plan
+@ck-build T1
+@ck-check --all
+```
+
+### Slash commands (manual)
 
 ```
 /ck-spec "auth service with JWT"
@@ -113,7 +142,11 @@ skills/
 ├── ck-build/SKILL.md    discovery-triggered build
 └── ck-check/SKILL.md    discovery-triggered check
 agents/
-└── cavekit.md           @cavekit subagent — full cycle orchestrator
+├── cavekit.md           @cavekit orchestrator — parallel cycle manager
+├── ck-spec.md           @ck-spec — spec creation & backprop
+├── ck-plan.md           @ck-plan — dependency analysis & build groups
+├── ck-build.md          @ck-build — single-task implementation (parallel-safe)
+└── ck-check.md          @ck-check — drift detection
 FORMAT.md                SPEC.md schema + caveman encoding rules
 AGENTS.md                always-on backprop protocol + encoding rules
 install.sh               installer
